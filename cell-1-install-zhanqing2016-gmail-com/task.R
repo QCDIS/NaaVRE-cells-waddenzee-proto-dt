@@ -99,7 +99,7 @@ save_object(
 
 
 
-RWSbiogeo  <- readRWS(file = files, dir = "/tmp/data/", format = "wide")   # output format
+RWSbiogeo  <- readRWS(file = files[1], dir = "/tmp/data/", format = "wide")   # output format
 
 RWSbiogeo$unknown <- RWSbiogeo$PIC <- RWSbiogeo$Ctot <- RWSbiogeo$Cl <- NULL
 
