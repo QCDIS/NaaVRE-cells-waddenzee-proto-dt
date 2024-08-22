@@ -86,6 +86,8 @@ Sys.setenv(
     "AWS_S3_ENDPOINT" = param_s3_endpoint
     )
 
+
+files <- c("20230915_019.csv", "20231022_001.csv", "20231022_002.csv")
 for (file in files) {
 save_object(
     region="", 
@@ -124,8 +126,6 @@ Sys.setenv(
     "AWS_S3_ENDPOINT" = param_s3_endpoint
     )
 
-
-files <- c("20230915_019.csv", "20231022_001.csv", "20231022_002.csv")
 
 Sys.setenv(
     "AWS_ACCESS_KEY_ID" = secret_s3_access_key,
