@@ -2,6 +2,10 @@ setwd('/app')
 library(optparse)
 library(jsonlite)
 
+if (!requireNamespace("aws.s3", quietly = TRUE)) {
+	install.packages("aws.s3", repos="http://cran.us.r-project.org")
+}
+library(aws.s3)
 if (!requireNamespace("devtools", quietly = TRUE)) {
 	install.packages("devtools", repos="http://cran.us.r-project.org")
 }
