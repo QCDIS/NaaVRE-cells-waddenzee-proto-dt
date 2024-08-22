@@ -80,10 +80,6 @@ require(dtLife)
 require(dtWad)
 require(dtPP)
 
-stations = Wad_biogeo_RWS$station
-
-
-
 Sys.setenv(
     "AWS_ACCESS_KEY_ID" = secret_s3_access_key,
     "AWS_SECRET_ACCESS_KEY" = secret_s3_secret_key,
@@ -103,6 +99,17 @@ save_object(
 
 
 
+RWSbiogeo  <- readRWS(file = files, dir = "/tmp/data/", format = "wide")   # output format
+
+RWSbiogeo$unknown <- RWSbiogeo$PIC <- RWSbiogeo$Ctot <- RWSbiogeo$Cl <- NULL
+
+LS  <- tapply(RWSbiogeo$datetime, 
+              INDEX = RWSbiogeo$station, 
+              FUN   = max, 
+              na.rm = TRUE)
+
+stations = RWSbiogeo$station
+
 
 stns <- c("huisdnbsd", "marsdnd", "helsdr", "malzn", "doovbwt",     
 "vliesm",   "westmp",    "blauwsot",    "harlghvmwt", "harlgvhvn",  
@@ -121,49 +128,10 @@ dgE <- c(   4.73,   4.75,   4.75,   4.90,   5.03,   5.16,   5.23,   5.28,
 
 RWSstations <- data.frame(station=stns, latitude=dgN, longitude=dgE)
 save(file="/tmp/data/RWSstations.rda", RWSstations)
-
-
-
-Sys.setenv(
-    "AWS_ACCESS_KEY_ID" = secret_s3_access_key,
-    "AWS_SECRET_ACCESS_KEY" = secret_s3_secret_key,
-    "AWS_S3_ENDPOINT" = param_s3_endpoint
-    )
-
-
-Sys.setenv(
-    "AWS_ACCESS_KEY_ID" = secret_s3_access_key,
-    "AWS_SECRET_ACCESS_KEY" = secret_s3_secret_key,
-    "AWS_S3_ENDPOINT" = param_s3_endpoint
-    )
-
-for (file in files) {
-save_object(
-    region="", 
-    bucket="naa-vre-waddenzee-shared", 
-    file=paste0("/tmp/data/",file), 
-    object= paste0("/waterinfo_RWS/raw_data/",file))
-}
-
-
-RWSbiogeo  <- readRWS(file = files, dir = "/tmp/data/", format = "wide")   # output format
-
-RWSbiogeo$unknown <- RWSbiogeo$PIC <- RWSbiogeo$Ctot <- RWSbiogeo$Cl <- NULL
-
-LS  <- tapply(RWSbiogeo$datetime, 
-              INDEX = RWSbiogeo$station, 
-              FUN   = max, 
-              na.rm = TRUE)
-
-RWSbiogeo_station <- RWSbiogeo$station
 # capturing outputs
 print('Serialization of stations')
 file <- file(paste0('/tmp/stations_', id, '.json'))
 writeLines(toJSON(stations, auto_unbox=TRUE), file)
-close(file)
-print('Serialization of RWSbiogeo_station')
-file <- file(paste0('/tmp/RWSbiogeo_station_', id, '.json'))
-writeLines(toJSON(RWSbiogeo_station, auto_unbox=TRUE), file)
 close(file)
 print('Serialization of LS')
 file <- file(paste0('/tmp/LS_', id, '.json'))
